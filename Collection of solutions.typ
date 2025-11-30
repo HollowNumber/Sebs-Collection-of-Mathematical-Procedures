@@ -1,6 +1,7 @@
 #import "@local/dtu-template:0.5.1":*
 #import "@preview/cetz:0.4.2"
-#import "@preview/cetz-plot:0.1.3"
+#import "@preview/cetz-plot:0.1.3": plot, chart
+#import "@preview/cetz-venn:0.1.4"
 
 // ═══════════════════════════════════════════════════════════════════════════
 // POLYNOMIAL DIVISION DISPLAY FUNCTION
@@ -246,6 +247,280 @@
 
 #definition(title: [Rektangulær form (Rectangular/Cartesian Form)])[
   Et komplekst tal på *rektangulær form*: $z = a + b i$ hvor $a, b in RR$.
+]
+
+// ═══════════════════════════════════════════════════════════════════════════
+// KOMPLEKSE TAL - UDVIDET SEKTION (FRA GENNEMGANG)
+// ═══════════════════════════════════════════════════════════════════════════
+
+== Komplekse Tal - Visualisering og Beregning
+
+#important[
+  *De tre vigtigste ting at huske om komplekse tal:*
+  1. $i^2 = -1$ (definition af den imaginære enhed)
+  2. $e^(i theta) = cos(theta) + i sin(theta)$ (Eulers formel)
+  3. Argumentet $arg(z)$ er vinklen fra den positive reelle akse
+]
+
+=== Det komplekse plan
+
+#align(center)[
+  #cetz.canvas({
+    import cetz.draw: *
+
+    let scale = 1.5
+
+    // Axes
+    line((-3 * scale, 0), (3 * scale, 0), stroke: gray + 1pt, mark: (end: ">", fill: gray))
+    line((0, -2.5 * scale), (0, 2.5 * scale), stroke: gray + 1pt, mark: (end: ">", fill: gray))
+
+    content((3 * scale + 0.3, 0), text(size: 10pt)[$"Re"$], anchor: "west")
+    content((0, 2.5 * scale + 0.3), text(size: 10pt)[$"Im"$], anchor: "south")
+
+    let a = 2
+    let b = 1.5
+    let ax = a * scale
+    let by = b * scale
+
+    // Point z
+    circle((ax, by), radius: 0.1, fill: blue, stroke: black + 1pt)
+    content((ax + 0.3, by + 0.3), text(size: 10pt, fill: blue)[$z = a + i b$])
+
+    // Projections
+    line((ax, 0), (ax, by), stroke: (paint: red, thickness: 1pt, dash: "dashed"))
+    line((0, by), (ax, by), stroke: (paint: green.darken(20%), thickness: 1pt, dash: "dashed"))
+
+    // Radius line
+    line((0, 0), (ax, by), stroke: purple + 1.5pt)
+    content((ax / 2 - 0.2, by / 2 + 0.3), text(size: 9pt, fill: purple)[$r = |z|$])
+
+    // Angle arc
+    arc((0, 0), start: 0deg, stop: calc.atan2(a, b), radius: 0.6, stroke: orange + 1pt)
+    content((0.9, 0.25), text(size: 9pt, fill: orange)[$theta$])
+
+    // Labels
+    content((ax / 2, -0.3), text(size: 9pt, fill: green.darken(20%))[$a = "Re"(z)$])
+    content((-0.5, by / 2), text(size: 9pt, fill: red)[$b = "Im"(z)$], anchor: "east")
+
+    // Tick marks
+    line((scale, -0.1), (scale, 0.1), stroke: black)
+    content((scale, -0.3), text(size: 8pt)[$1$])
+    line((2 * scale, -0.1), (2 * scale, 0.1), stroke: black)
+    content((2 * scale, -0.3), text(size: 8pt)[$2$])
+    line((-0.1, scale), (0.1, scale), stroke: black)
+    content((-0.3, scale), text(size: 8pt)[$i$])
+  })
+]
+
+=== Konvertering mellem former
+
+#figure(caption: [Konverteringsformler])[
+  #table(
+    columns: 2,
+    align: center,
+    stroke: 0.5pt + gray,
+    fill: (x, y) => if y == 0 { gray.lighten(80%) } else { none },
+    table.header([*Rektangulær → Polær*], [*Polær → Rektangulær*]),
+    [$|z| = sqrt(a^2 + b^2)$ \ $theta = arg(z)$ (se formel nedenfor)],
+    [$a = |z| cos(theta)$ \ $b = |z| sin(theta)$],
+  )
+]
+
+=== Argumentet $arg(z)$ — VIGTIG FORMEL
+
+#important[
+  *Sætning 4.3.1 — Beregning af argumentet:*
+
+  For $z = a + b i eq.not 0$:
+  $
+    arg(z) = cases(
+      arctan(b/a) & "hvis" a > 0 "(I. eller IV. kvadrant)",
+      pi/2 & "hvis" a = 0 "og" b > 0 "(positiv Im-akse)",
+      arctan(b/a) + pi & "hvis" a < 0 "(II. eller III. kvadrant)",
+      -pi/2 & "hvis" a = 0 "og" b < 0 "(negativ Im-akse)",
+
+    )
+  $
+]
+
+#note-box[
+  *Trin-for-trin til at finde $arg(z)$:*
+  1. Tegn punktet $(a, b)$ i det komplekse plan
+  2. Bestem hvilken kvadrant punktet ligger i
+  3. Beregn $arctan(b/a)$
+  4. Juster baseret på kvadrant:
+    - Kvadrant I eller IV ($a > 0$): Brug $arctan(b/a)$ direkte
+    - Kvadrant II eller III ($a < 0$): Læg $pi$ til
+    - På Im-aksen: $plus.minus pi/2$
+]
+
+=== CAST-reglen — Fortegn i kvadranter
+
+#align(center)[
+  #cetz.canvas({
+    import cetz.draw: *
+
+    let r = 3.0
+
+    // Quadrant colors
+    arc(
+      (0, 0),
+      start: 0deg,
+      stop: 90deg,
+      radius: r,
+      mode: "PIE",
+      fill: rgb(200, 255, 200, 50),
+      stroke: none,
+      anchor: "origin",
+    )
+    arc(
+      (0, 0),
+      start: 90deg,
+      stop: 180deg,
+      radius: r,
+      mode: "PIE",
+      fill: rgb(200, 200, 255, 50),
+      stroke: none,
+      anchor: "origin",
+    )
+    arc(
+      (0, 0),
+      start: 180deg,
+      stop: 270deg,
+      radius: r,
+      mode: "PIE",
+      fill: rgb(255, 200, 200, 50),
+      stroke: none,
+      anchor: "origin",
+    )
+    arc(
+      (0, 0),
+      start: 270deg,
+      stop: 360deg,
+      radius: r,
+      mode: "PIE",
+      fill: rgb(255, 255, 200, 50),
+      stroke: none,
+      anchor: "origin",
+    )
+
+    // Main circle
+    circle((0, 0), radius: r, stroke: black + 1.5pt)
+
+    // Axes
+    line((-r - 0.5, 0), (r + 0.5, 0), stroke: gray + 1pt, mark: (end: ">", fill: gray))
+    line((0, -r - 0.5), (0, r + 0.5), stroke: gray + 1pt, mark: (end: ">", fill: gray))
+
+    // CAST labels
+    content((r * 0.5, r * 0.5), text(size: 14pt, fill: rgb(0, 100, 0), weight: "bold")[A])
+    content((-r * 0.5, r * 0.5), text(size: 14pt, fill: rgb(0, 0, 150), weight: "bold")[S])
+    content((-r * 0.5, -r * 0.5), text(size: 14pt, fill: rgb(150, 0, 0), weight: "bold")[T])
+    content((r * 0.5, -r * 0.5), text(size: 14pt, fill: rgb(150, 100, 0), weight: "bold")[C])
+
+    // Quadrant labels
+    content((r * 0.5, r * 0.8), text(size: 8pt)[I])
+    content((-r * 0.5, r * 0.8), text(size: 8pt)[II])
+    content((-r * 0.5, -r * 0.8), text(size: 8pt)[III])
+    content((r * 0.5, -r * 0.8), text(size: 8pt)[IV])
+  })
+]
+
+#note-box[
+  *CAST-reglen* (læses mod uret fra IV. kvadrant):
+  - *Kvadrant I* (0° -- 90°): #strong[A]lle positive ($sin$, $cos$, $tan$ alle $> 0$)
+  - *Kvadrant II* (90° -- 180°): Kun #strong[S]in positiv
+  - *Kvadrant III* (180° -- 270°): Kun #strong[T]an positiv
+  - *Kvadrant IV* (270° -- 360°): Kun #strong[C]os positiv
+
+  *Huskeregel:* "All Students Take Calculus" — læs mod uret fra I. kvadrant.
+]
+
+=== Eksponentialligninger: $e^z = w$
+
+#lemma(name: "4.6.1 — Løsning af eksponentialligninger")[
+  For $e^z = w$ med $w in CC$ givet og $z in CC$ søgt:
+  $
+    z = ln|w| + i(arg(w) + 2pi p), quad p in ZZ
+  $
+]
+
+#important[
+  *Husk altid at angive $p in ZZ$* for at få fuld point! Der er uendeligt mange løsninger.
+]
+
+#example(title: "Løs eksponentialligning")[
+  Løs $e^z = sqrt(2) + i sqrt(2)$.
+
+  #solution[
+    Vi har $w = sqrt(2) + i sqrt(2)$.
+
+    *Trin 1 — Find modulus:*
+    $
+      |w| = sqrt((sqrt(2))^2 + (sqrt(2))^2) = sqrt(2 + 2) = sqrt(4) = 2
+    $
+
+    *Trin 2 — Find argument:*
+
+    Begge dele positive → I. kvadrant, så:
+    $
+      arg(w) = arctan(sqrt(2) / sqrt(2)) = arctan(1) = pi/4
+    $
+
+    *Trin 3 — Anvend formlen:*
+    $
+      z = ln(2) + i(pi/4 + 2pi p), quad p in ZZ
+    $
+  ]
+]
+
+=== Binomialligninger: $z^n = w$
+
+#note-box[
+  *Fremgangsmåde for $z^n = w$:*
+
+  1. Skriv $w$ på polær form: $w = |w| e^(i arg(w))$
+  2. Brug formlen:
+    $
+      z_k = root(n, |w|) dot e^(i(arg(w)/n + (2pi k)/n)), quad k = 0, 1, 2, ..., n-1
+    $
+  3. Der er præcis $n$ forskellige løsninger (rødderne ligger jævnt fordelt på en cirkel)
+]
+
+#example(title: "Løs binomialligning")[
+  Løs $z^3 = -i$.
+
+  #solution[
+    *Trin 1 — Find modulus og argument af $w = -i$:*
+    $
+      |-i| = 1, quad arg(-i) = -pi/2
+    $
+    (Punktet $(0, -1)$ ligger på den negative imaginære akse)
+
+    *Trin 2 — Anvend formlen med $n = 3$:*
+    $
+      z_k = root(3, 1) dot e^(i(-pi/6 + (2pi k)/3)), quad k = 0, 1, 2
+    $
+
+    *Trin 3 — Beregn de tre løsninger:*
+    $
+      z_0 &= e^(-i pi/6) = cos(-pi/6) + i sin(-pi/6) = sqrt(3)/2 - i/2 \
+      z_1 &= e^(i(-pi/6 + 2pi/3)) = e^(i pi/2) = i \
+      z_2 &= e^(i(-pi/6 + 4pi/3)) = e^(i 7pi/6) = -sqrt(3)/2 - i/2
+    $
+
+    *Verifikation:* $(i)^3 = i^2 dot i = -1 dot i = -i$ ✓
+  ]
+]
+
+#math-hint[
+  *Hurtige checks for komplekse tal:*
+  - $|z|^2 = z dot overline(z) = a^2 + b^2$ (altid reelt og ikke-negativt)
+  - $|z_1 dot z_2| = |z_1| dot |z_2|$ (modulus multipliceres)
+  - $arg(z_1 dot z_2) = arg(z_1) + arg(z_2)$ (argumenter adderes)
+  - Kompleks konjugering: $overline(z_1 + z_2) = overline(z_1) + overline(z_2)$
+  - Kompleks konjugering: $overline(z_1 dot z_2) = overline(z_1) dot overline(z_2)$
+
+  *MC-gæt:* Rødder til $z^n = w$ ligger altid på en cirkel med radius $root(n, |w|)$, jævnt fordelt med vinkelafstand $2pi/n$.
 ]
 
 == Polynomier
@@ -1637,20 +1912,66 @@
 
 == Divisionsalgoritmen til at undersøge rod
 
+#important[
+  *Polynomiumsdivision — Nøglen til at finde rødder!*
+
+  Hvis du kender én rod $lambda$, kan du dividere polynomiet med $(Z - lambda)$ for at finde de resterende rødder i kvotienten.
+]
+
 #note-box[
-  *Fremgangsmåde:* (Referér til Lemma 5.6.2)
+  *Fremgangsmåde — Trin for trin:* (Referér til Lemma 5.6.2)
 
-  For at undersøge om $Z = lambda$ er rod i $q(Z)$:
+  For at undersøge om $Z = lambda$ er rod i $q(Z) = a_n Z^n + a_(n-1) Z^(n-1) + ... + a_0$:
 
-  1. Opskriv $(Z - lambda)$ i venstre side, $q(Z)$ i midten
-  2. Find faktor $a_1 Z^n$ så $(Z - lambda) dot a_1 Z^n$ fjerner førsteleddet i $q(Z)$
-  3. Gentag processen med faldende potenser
-  4. *Konklusion:*
-    - Rest = 0: $Z - lambda$ er rod
-    - Rest = polynomium af grad $> 1$: Undersøg dette polynomium videre
-    - Rest = konstant eller førstegradspolynomium: Ikke rod
+  *Trin 1:* Opstil divisionen med $(Z - lambda)$ til venstre og $q(Z)$ til højre
+
+  *Trin 2:* Find kvotientens førstegrad ved at dividere førsteleddet:
+  $ "Første kvotientled" = (a_n Z^n) / Z = a_n Z^(n-1) $
+
+  *Trin 3:* Gang $(Z - lambda)$ med kvotientleddet og *træk fra*:
+  $ (Z - lambda) dot a_n Z^(n-1) = a_n Z^n - lambda a_n Z^(n-1) $
+
+  *Trin 4:* Gentag med det nye polynomium indtil graden er lavere end divisorens grad
+
+  *Trin 5 — Konklusion:*
+  - Rest = 0: $Z = lambda$ *er* rod, og kvotienten kan løses videre
+  - Rest $eq.not$ 0: $Z = lambda$ er *ikke* rod
 
   *Bemærk:* Skal samtlige komplekse rødder findes, er lemma 5.3.3 desuden nyttig.
+]
+
+#example(title: [Polynomiumsdivision — Komplet eksempel])[
+  Givet $p(Z) = 2Z^3 - 2Z^2 - 8Z - 12$ og oplyst at $p(3) = 0$.
+
+  Find alle rødder i $p(Z)$.
+
+  #solution[
+    *Trin 1 — Verificér at $Z = 3$ er rod:*
+    $
+      p(3) = 2(27) - 2(9) - 8(3) - 12 = 54 - 18 - 24 - 12 = 0 quad checkmark
+    $
+
+    *Trin 2 — Divider med $(Z - 3)$:*
+
+    #align(center, polynomial-division(($2Z^3$, $-2Z^2$, $-8Z$, $-12$), (
+      (0, $2Z^2$, ($2Z^3$, $-6Z^2$), true),
+      (1, none, ($4Z^2$, $-8Z$), false),
+      (1, $+4Z$, ($4Z^2$, $-12Z$), true),
+      (2, none, ($4Z$, $-12$), false),
+      (2, $+4$, ($4Z$, $-12$), true),
+    ), $(Z - 3)$))
+
+    Så $p(Z) = (Z - 3)(2Z^2 + 4Z + 4) = 2(Z - 3)(Z^2 + 2Z + 2)$
+
+    *Trin 3 — Løs andengradsligning $Z^2 + 2Z + 2 = 0$:*
+    $
+      Z = (-2 plus.minus sqrt(4 - 8))/2 = (-2 plus.minus sqrt(-4))/2 = (-2 plus.minus 2i)/2 = -1 plus.minus i
+    $
+
+    *Alle rødder:* $lambda_1 = 3$, $lambda_2 = -1 + i$, $lambda_3 = -1 - i$
+
+    *Faktorisering:* $p(Z) = 2(Z - 3)(Z - (-1+i))(Z - (-1-i))$
+  ]
 ]
 
 #example(title: [Undersøg om $Z = 2$ er rod i $Z^3 - 5Z^2 - 4Z + 20$])[
@@ -1663,6 +1984,8 @@
   ), $(Z - 2)$))
 
   Rest = 0, så $Z = 2$ *er* rod. Kvotienten er $Z^2 - 3Z - 10$.
+
+  *Videre:* $Z^2 - 3Z - 10 = (Z - 5)(Z + 2)$, så alle rødder er $Z = 2, 5, -2$.
 ]
 
 == Divisionsalgoritmen til at undersøge faktor
@@ -1670,25 +1993,28 @@
 #note-box[
   *Fremgangsmåde:* (Referér til korollar 5.6.4)
 
-  For at undersøge om $u(Z)$ er faktor i $q(Z)$:
+  For at undersøge om $u(Z)$ (af grad $>$ 1) er faktor i $q(Z)$:
 
   1. Opskriv $u(Z)$ i venstre side, $q(Z)$ i midten
   2. Find faktor $a_1 Z^n$ så $u(Z) dot a_1 Z^n$ fjerner førsteleddet i $q(Z)$
   3. Gentag processen
   4. *Konklusion:*
     - Rest = 0: $u(Z)$ er faktor
-    - Rest = polynomium med grad $>$ grad af $u(Z)$: Undersøg videre
-    - Rest = polynomium med grad $<=$ grad af $u(Z)$: Ikke faktor
+    - Rest = polynomium med grad $>= $ grad af $u(Z)$: Undersøg videre
+    - Rest = polynomium med grad $<$ grad af $u(Z)$: Ikke faktor
 ]
 
-#math-hint()[
+#math-hint(
+  )[
   *Hurtig faktor-tjek:* Hvis $p(a) = 0$, så er $(Z - a)$ en faktor.
 
-  *Horners metode:* Hurtigere end lang division for lineære faktorer.
+  *Test standard rødder først:* Prøv $Z = 0, plus.minus 1, plus.minus 2, plus.minus 3$ — eksamensspørgsmål har ofte "pæne" rødder!
 
-  // TODO display Horner's method example
+  *Komplekse rødder:* Hvis koefficienterne er *reelle* og du finder én kompleks rod $alpha + beta i$, er $alpha - beta i$ *også* rod.
 
   *MC-gæt:* Hvis opgaven giver én rod, er de resterende ofte "pæne" tal eller konjugerede par.
+
+  *Algebraens fundamentalsætning:* Et polynomium af grad $n$ har præcis $n$ rødder (talt med multiplicitet) i $CC$.
 ]
 
 == Multiplicitet af rod i polynomium
@@ -1705,15 +2031,120 @@
 == Induktion over de naturlige tal
 
 #note-box[
-  *Bemærk:* $NN$ inkluderer *ikke* 0 på DTU. Basisskridtet er $P(1)$.
+  *Bemærk:* $NN$ inkluderer *ikke* 0 på DTU. Basisskridtet er typisk $P(1)$ eller $P(n_0)$.
 
   *Fremgangsmåde:* (Referér til korollar 3.4.2)
 
-  0. Se om du hurtigt kan få den gode idé - ellers gem til sidst
-  1. *Basisskridtet:* Verificér $P(1)$
-  2. *Induktionshypotesen:* Antag $P(n-1)$
-  3. *Induktionsskridtet:* Vis $P(n)$
-  4. Forkort dig i mål
+  1. *Basisskridtet:* Verificér $P(n_0)$ (ofte $n_0 = 1$)
+  2. *Induktionshypotesen (I.H.):* Antag $P(n-1)$ gælder for et vilkårligt $n >= n_0 + 1$
+  3. *Induktionsskridtet (I.S.):* Vis at $P(n)$ følger af $P(n-1)$
+  4. *Konklusion:* Dermed gælder $P(n)$ for alle $n >= n_0$ ved induktionsprincippet. $square$
+]
+
+#important[
+  *Typiske fejl at undgå:*
+  - Glem ikke at *eksplicit skrive* "Induktionshypotese" og "Induktionsskridt"
+  - Husk at *bruge* I.H. i beviset — marker hvor du bruger den!
+  - Afslut med en *klar konklusion* der refererer til induktionsprincippet
+]
+
+=== Eksempel 1: Sum af de første $n$ naturlige tal
+
+#example(title: "Bevis ved induktion — Sum")[
+  Vis at $display(sum_(k=1)^n k = (n(n+1))/2)$ for alle $n in NN$.
+
+  #solution[
+    *Basisskridt* ($n = 1$):
+    $
+      "V.S.:" quad sum_(k=1)^1 k = 1, quad "H.S.:" quad (1 dot 2)/2 = 1 quad checkmark
+    $
+
+    *Induktionshypotese (I.H.):*
+
+    Antag at $display(sum_(k=1)^(n-1) k = ((n-1)n)/2)$ gælder for et vilkårligt $n >= 2$.
+
+    *Induktionsskridt (I.S.):*
+
+    Vi skal vise at $display(sum_(k=1)^n k = (n(n+1))/2)$.
+    $
+      sum_(k=1)^n k &= underbrace(sum_(k=1)^(n-1) k, = ((n-1)n)/2 "af I.H.") + n \
+                    &= ((n-1)n)/2 + n \
+                    &= ((n-1)n)/2 + (2n)/2 \
+                    &= ((n-1)n + 2n)/2 \
+                    &= (n^2 - n + 2n)/2 \
+                    &= (n^2 + n)/2 \
+                    &= (n(n+1))/2 quad checkmark
+    $
+
+    *Konklusion:* Ved induktionsprincippet gælder formlen for alle $n in NN$. $square$
+  ]
+]
+
+=== Eksempel 2: Rekursiv følge
+
+#example(title: "Bevis ved induktion — Rekursiv følge")[
+  Lad $s_n$ være defineret rekursivt ved:
+  $
+    s_n = cases(1 & n = 1, 2s_(n-1) + 1 & n > 1)
+  $
+
+  Vis at $s_n = 2^n - 1$ for alle $n in NN$.
+
+  #solution[
+    *Basisskridt* ($n = 1$):
+    $
+      s_1 = 1 = 2^1 - 1 = 2 - 1 = 1 quad checkmark
+    $
+
+    *Induktionshypotese (I.H.):*
+
+    Antag at $s_(n-1) = 2^(n-1) - 1$ for et vilkårligt $n >= 2$.
+
+    *Induktionsskridt (I.S.):*
+
+    Vi skal vise at $s_n = 2^n - 1$.
+    $
+      s_n &= 2 s_(n-1) + 1 quad "(definition)" \
+          &= 2(2^(n-1) - 1) + 1 quad "(I.H.)" \
+          &= 2 dot 2^(n-1) - 2 + 1 \
+          &= 2^n - 1 quad checkmark
+    $
+
+    *Konklusion:* Ved induktionsprincippet gælder $s_n = 2^n - 1$ for alle $n in NN$. $square$
+  ]
+]
+
+=== Eksempel 3: Matrixpotenser
+
+#example(title: "Bevis ved induktion — Matrixpotens")[
+  Lad $bold(A) = mat(1, 2;0, 1)$.
+
+  Vis at $bold(A)^n = mat(1, 2n;0, 1)$ for alle $n in NN$.
+
+  #solution[
+    *Basisskridt* ($n = 1$):
+    $
+      bold(A)^1 = mat(1, 2;0, 1) = mat(1, 2 dot 1;0, 1) quad checkmark
+    $
+
+    *Induktionshypotese (I.H.):*
+
+    Antag at $bold(A)^(n-1) = mat(1, 2(n-1);0, 1)$ for et vilkårligt $n >= 2$.
+
+    *Induktionsskridt (I.S.):*
+
+    Vi skal vise at $bold(A)^n = mat(1, 2n;0, 1)$.
+    $
+      bold(A)^n &= bold(A)^(n-1) dot bold(A) \
+                &= mat(1, 2(n-1);0, 1) dot mat(1, 2;0, 1) quad "(I.H.)" \
+                &= mat(1 dot 1 + 2(n-1) dot 0, 1 dot 2 + 2(n-1) dot 1;0 dot 1 + 1 dot 0, 0 dot 2 + 1 dot 1) \
+                &= mat(1, 2 + 2(n-1);0, 1) \
+                &= mat(1, 2 + 2n - 2;0, 1) \
+                &= mat(1, 2n;0, 1) quad checkmark
+    $
+
+    *Konklusion:* Ved induktionsprincippet gælder formlen for alle $n in NN$. $square$
+  ]
 ]
 
 == Induktion over andre tallegemer
@@ -1721,8 +2152,10 @@
 #note-box[
   *Fremgangsmåde:* (Referér til sætning 3.5.1)
 
-  1. *Basisskridtet:* $P(b)$ hvor $b$ er mindste tal
-  2. *Induktionshypotesen:* Antag $P(n-1)$
+  Hvis påstanden skal gælde for $n >= n_0$ (hvor $n_0 eq.not 1$):
+
+  1. *Basisskridtet:* Verificér $P(n_0)$
+  2. *Induktionshypotesen:* Antag $P(n-1)$ for $n >= n_0 + 1$
   3. *Induktionsskridtet:* Vis $P(n)$
 ]
 
@@ -1735,9 +2168,12 @@
 
   *Test simple rødder først:* Prøv $Z = 0, plus.minus 1, plus.minus 2$ før du bruger formler.
 
-  *Induktion:*
+  *Induktion — Strategi:*
   - Basisskridtet er ofte trivielt — brug det til at forstå mønstret
-  - I induktionsskridtet: Skriv $P(n)$ som $P(n-1) +$ "noget"
+  - I induktionsskridtet: Skriv $P(n)$ som $P(n-1) +$ "noget ekstra"
+  - For summer: $sum_(k=1)^n = sum_(k=1)^(n-1) + "sidste led"$
+  - For rekursive følger: Brug definitionen direkte
+  - For matrixpotenser: $bold(A)^n = bold(A)^(n-1) dot bold(A)$
 ]
 
 = Uge 6: Lineære Ligningssystemer og Gauss Elimination
@@ -2169,6 +2605,74 @@
 
   Egenrummet for $lambda$ er mængden af alle egenvektorer (plus nulvektoren):
   $ E_lambda = ker(bold(A) - lambda bold(I)_n) $
+]
+
+#example(title: [Komplet eksempel — Find egenværdier, egenvektorer og egenrum])[
+  Givet $bold(A) = mat(1, 2;2, 1) in RR^(2 times 2)$.
+
+  Find egenværdierne, egenvektorerne og egenrummene.
+
+  #solution[
+    *Trin 1 — Find det karakteristiske polynomium:*
+    $
+      p_(bold(A))(Z) &= det(bold(A) - Z bold(I)_2) = det mat(1-Z, 2;2, 1-Z) \
+                     &= (1-Z)(1-Z) - 2 dot 2 \
+                     &= (1-Z)^2 - 4
+    $
+
+    *Trin 2 — Find egenværdierne (løs $p_(bold(A))(Z) = 0$):*
+    $
+      (1-Z)^2 - 4 &= 0 \
+      (1-Z)^2     &= 4 \
+      1 - Z       &= plus.minus 2 \
+      Z           &= 1 minus.plus 2
+    $
+
+    *Egenværdier:* $lambda_1 = -1$ og $lambda_2 = 3$
+
+    *Trin 3 — Find egenrummet $E_(-1)$:*
+    $
+      E_(-1) = ker(bold(A) - (-1) bold(I)_2) = ker mat(2, 2;2, 2)
+    $
+
+    Reducér til RREF:
+    $
+      mat(2, 2;2, 2) arrow.long^("RREF") mat(1, 1;0, 0)
+    $
+
+    Fra RREF: $v_1 + v_2 = 0$, så $v_1 = -v_2 = -t$ hvor $v_2 = t$ er fri.
+    $
+      bold(v) = vec(v_1, v_2) = t vec(-1, 1) quad => quad E_(-1) = "span"{vec(-1, 1)}
+    $
+
+    *Trin 4 — Find egenrummet $E_3$:*
+    $
+      E_3 = ker(bold(A) - 3 bold(I)_2) = ker mat(-2, 2;2, -2)
+    $
+
+    Reducér til RREF:
+    $
+      mat(-2, 2;2, -2) arrow.long^("RREF") mat(1, -1;0, 0)
+    $
+
+    Fra RREF: $v_1 - v_2 = 0$, så $v_1 = v_2 = t$ hvor $v_2 = t$ er fri.
+    $
+      bold(v) = t vec(1, 1) quad => quad E_3 = "span"{vec(1, 1)}
+    $
+
+    *Opsummering:*
+    - $lambda_1 = -1$: $E_(-1) = "span"{vec(-1, 1)}$, $"gm"(-1) = 1$, $"am"(-1) = 1$
+    - $lambda_2 = 3$: $E_3 = "span"{vec(1, 1)}$, $"gm"(3) = 1$, $"am"(3) = 1$
+
+    Da $"gm" = "am"$ for begge egenværdier, er $bold(A)$ *diagonaliserbar*.
+  ]
+]
+
+#important[
+  *Vigtig sammenhæng:*
+  $ 1 <= "gm"(lambda) <= "am"(lambda) $
+
+  En matrix er diagonaliserbar $<=>$ $"gm"(lambda) = "am"(lambda)$ for alle egenværdier.
 ]
 
 == Basis for egenrum
