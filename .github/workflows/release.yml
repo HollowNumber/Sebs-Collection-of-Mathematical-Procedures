@@ -1,0 +1,33 @@
+name: Build and Release PDF
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v3
+        with:
+          typst-version: 'latest'
+      
+      - name: Compile Typst document
+        run: |
+          typst compile "Collection of solutions.typ" "Collection-of-solutions.pdf"
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: Collection-of-solutions.pdf
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
