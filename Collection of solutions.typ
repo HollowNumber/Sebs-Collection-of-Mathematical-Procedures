@@ -2,11 +2,17 @@
 #import "@preview/cetz:0.4.2"
 #import "@preview/cetz-plot:0.1.3": plot, chart
 #import "@preview/cetz-venn:0.1.4"
+#import "@preview/auto-div:0.1.0": poly-div, poly-div-working
 
 // ═══════════════════════════════════════════════════════════════════════════
-// POLYNOMIAL DIVISION DISPLAY FUNCTION
+// POLYNOMIAL DIVISION DISPLAY FUNCTION (LEGACY)
+// ═══════════════════════════════════════════════════════════════════════════
+// NOTE: This function is kept for backwards compatibility with other lecture files.
+// For new code, use the `auto-div` package instead:
+//   $ #poly-div-working((koefficienter), (1, -rod), var: $Z$) $
 // ═══════════════════════════════════════════════════════════════════════════
 
+/// DEPRECATED: Use poly-div-working from auto-div package instead.
 /// Renders polynomial long division in a clean, readable format.
 /// - base: array of terms in the dividend, e.g. ($x^3$, $-5x^2$, $-4x$, $+20$)
 /// - steps: array of step tuples: (indent, quotient-term, products, is-subtraction)
@@ -1913,79 +1919,106 @@
 == Divisionsalgoritmen til at undersøge rod
 
 #important[
-  *Polynomiumsdivision — Nøglen til at finde rødder!*
+  *Polynomiumsdivision og Rødder — EKSAMENSKLASSIKER!*
 
-  Hvis du kender én rod $lambda$, kan du dividere polynomiet med $(Z - lambda)$ for at finde de resterende rødder i kvotienten.
+  *Opgavetype:* Givet $p(Z)$ og én rod $lambda$, find faktorisering og alle rødder.
+
+  *Strategi:*
+  1. Hvis $lambda$ er rod → $(Z - lambda)$ er faktor
+  2. Divider $p(Z)$ med $(Z - lambda)$ → får $q(Z)$ af grad én lavere
+  3. Løs $q(Z) = 0$ (ofte 2. gradsligning → brug diskriminant)
 ]
 
 #note-box[
-  *Fremgangsmåde — Trin for trin:* (Referér til Lemma 5.6.2)
+  *Fremgangsmåde: Polynomiumsdivision i hånden*
 
-  For at undersøge om $Z = lambda$ er rod i $q(Z) = a_n Z^n + a_(n-1) Z^(n-1) + ... + a_0$:
+  *Givet:* Polynomium $p(Z)$ og oplyst at $Z = r$ er rod.
 
-  *Trin 1:* Opstil divisionen med $(Z - lambda)$ til venstre og $q(Z)$ til højre
+  *Find:* Faktorisering og samtlige rødder i $CC$.
 
-  *Trin 2:* Find kvotientens førstegrad ved at dividere førsteleddet:
-  $ "Første kvotientled" = (a_n Z^n) / Z = a_n Z^(n-1) $
+  *Trin 1 — Verificér roden (valgfrit men godt at tjekke):*
+  $ p(r) = 0 quad checkmark $
 
-  *Trin 3:* Gang $(Z - lambda)$ med kvotientleddet og *træk fra*:
-  $ (Z - lambda) dot a_n Z^(n-1) = a_n Z^n - lambda a_n Z^(n-1) $
+  *Trin 2 — Udfør polynomiumsdivision:*
 
-  *Trin 4:* Gentag med det nye polynomium indtil graden er lavere end divisorens grad
+  Da $Z = r$ er rod, er $(Z - r)$ en faktor. Udfør lang division:
 
-  *Trin 5 — Konklusion:*
-  - Rest = 0: $Z = lambda$ *er* rod, og kvotienten kan løses videre
-  - Rest $eq.not$ 0: $Z = lambda$ er *ikke* rod
+  + Tag det *ledende led* i dividenden, divider med $Z$
+    - Eksempel: $2Z^3 div Z = 2Z^2$ → første led i kvotienten
+  + *Gang* divisoren $(Z - r)$ med dette led
+    - Eksempel: $2Z^2 dot (Z - 3) = 2Z^3 - 6Z^2$
+  + *Træk fra* dividenden og få en ny rest
+    - Eksempel: $(2Z^3 - 2Z^2) - (2Z^3 - 6Z^2) = 4Z^2$
+  + *Gentag* med resten indtil graden er lavere end divisorens
 
-  *Bemærk:* Skal samtlige komplekse rødder findes, er lemma 5.3.3 desuden nyttig.
+  *Trin 3 — Løs kvotienten:*
+  - Hvis $q(Z)$ er 2. grad: Brug diskriminantformlen
+  - Hvis $q(Z)$ er højere grad: Gentag polynomiumsdivision med andre rødder
+
+  *Trin 4 — Skriv komplet faktorisering:*
+  $ p(Z) = a_n (Z - r_1)(Z - r_2) dots.c (Z - r_n) $
+
+  hvor $a_n$ er den ledende koefficient.
 ]
 
-#example(title: [Polynomiumsdivision — Komplet eksempel])[
-  Givet $p(Z) = 2Z^3 - 2Z^2 - 8Z - 12$ og oplyst at $p(3) = 0$.
+#lemma(name: "2. Gradsformel (Diskriminant)")[
+  For $a Z^2 + b Z + c = 0$:
+  $ Z = frac(-b plus.minus sqrt(b^2 - 4 a c), 2a) = frac(-b plus.minus sqrt(D), 2a) $
 
-  Find alle rødder i $p(Z)$.
+  - $D > 0$: To reelle rødder
+  - $D = 0$: Én dobbeltrod
+  - $D < 0$: To komplekse rødder $Z = frac(-b, 2a) plus.minus i frac(sqrt(|D|), 2a)$
+
+  *Bemærk:* Komplekse rødder kommer altid i konjugerede par når koefficienterne er reelle!
+]
+
+#example(title: [Polynomiumsdivision — E24 Opgave 2 (Komplet løsning)])[
+  *Givet:* $p(Z) = 2Z^3 - 2Z^2 - 8Z - 12$, og $Z = 3$ er rod.
+
+  a) Skriv $p(Z)$ som produkt af et 1.-grads og et 2.-gradspolynomium.
+
+  b) Find samtlige rødder i $CC$.
 
   #solution[
-    *Trin 1 — Verificér at $Z = 3$ er rod:*
-    $
-      p(3) = 2(27) - 2(9) - 8(3) - 12 = 54 - 18 - 24 - 12 = 0 quad checkmark
-    $
+    *Del a) — Faktorisering via polynomiumsdivision:*
 
-    *Trin 2 — Divider med $(Z - 3)$:*
+    Siden $Z = 3$ er rod, er $(Z - 3)$ en faktor. Vi dividerer:
 
-    #align(center, polynomial-division(($2Z^3$, $-2Z^2$, $-8Z$, $-12$), (
-      (0, $2Z^2$, ($2Z^3$, $-6Z^2$), true),
-      (1, none, ($4Z^2$, $-8Z$), false),
-      (1, $+4Z$, ($4Z^2$, $-12Z$), true),
-      (2, none, ($4Z$, $-12$), false),
-      (2, $+4$, ($4Z$, $-12$), true),
-    ), $(Z - 3)$))
+    #align(center)[
+      $ #poly-div-working((2, -2, -8, -12), (1, -3), var: $Z$) $
+    ]
 
-    Så $p(Z) = (Z - 3)(2Z^2 + 4Z + 4) = 2(Z - 3)(Z^2 + 2Z + 2)$
+    *Resultat:*
+    $ p(Z) = (Z - 3)(2Z^2 + 4Z + 4) = 2(Z - 3)(Z^2 + 2Z + 2) $
 
-    *Trin 3 — Løs andengradsligning $Z^2 + 2Z + 2 = 0$:*
-    $
-      Z = (-2 plus.minus sqrt(4 - 8))/2 = (-2 plus.minus sqrt(-4))/2 = (-2 plus.minus 2i)/2 = -1 plus.minus i
-    $
+    *Del b) — Find alle rødder:*
 
-    *Alle rødder:* $lambda_1 = 3$, $lambda_2 = -1 + i$, $lambda_3 = -1 - i$
+    *Rod 1:* $Z = 3$ (givet)
 
-    *Faktorisering:* $p(Z) = 2(Z - 3)(Z - (-1+i))(Z - (-1-i))$
+    *Rod 2 og 3:* Løs $Z^2 + 2Z + 2 = 0$
+
+    Diskriminant: $D = 2^2 - 4 dot 1 dot 2 = 4 - 8 = -4 < 0$ → komplekse rødder
+
+    $ Z = frac(-2 plus.minus sqrt(-4), 2) = frac(-2 plus.minus 2i, 2) = -1 plus.minus i $
+
+    #important[
+      *Alle rødder:* $Z_1 = 3$, $Z_2 = -1 + i$, $Z_3 = -1 - i$
+
+      *Komplet faktorisering:* $p(Z) = 2(Z - 3)(Z - (-1+i))(Z - (-1-i))$
+    ]
   ]
 ]
 
 #example(title: [Undersøg om $Z = 2$ er rod i $Z^3 - 5Z^2 - 4Z + 20$])[
-  #align(center, polynomial-division(($Z^3$, $-5Z^2$, $-4Z$, $+20$), (
-    (0, $Z^2$, ($Z^3$, $-2Z^2$), true),
-    (1, none, ($-3Z^2$, $-4Z$), false),
-    (1, $-3Z$, ($-3Z^2$, $+6Z$), true),
-    (2, none, ($-10Z$, $+20$), false),
-    (2, $-10$, ($-10Z$, $+20$), true),
-  ), $(Z - 2)$))
+  #align(center)[
+    $ #poly-div-working((1, -5, -4, 20), (1, -2), var: $Z$) $
+  ]
 
   Rest = 0, så $Z = 2$ *er* rod. Kvotienten er $Z^2 - 3Z - 10$.
 
-  *Videre:* $Z^2 - 3Z - 10 = (Z - 5)(Z + 2)$, så alle rødder er $Z = 2, 5, -2$.
+  *Videre faktorisering:* $Z^2 - 3Z - 10 = (Z - 5)(Z + 2)$
+
+  *Alle rødder:* $Z = 2, 5, -2$
 ]
 
 == Divisionsalgoritmen til at undersøge faktor
@@ -3854,17 +3887,24 @@ Afbildningsmatrix: $amat(L, beta, beta) = mat(1, 1, 1, 1;0, 1, 1, 1;0, 0, 1, 1;0
 
   Givet $p(Z)$ hvor $Z = r$ er rod, så er $(Z - r)$ en faktor.
 
-  1. *Opstil divisionen:* $p(Z) div (Z - r)$
+  1. *Opstil divisionen:* Skriv $p(Z)$ til højre og $(Z - r)$ til venstre
 
-  2. *Udfør lang division:*
-    - Tag det ledende led i dividenden, divider med det ledende led i divisor
-    - Gang divisor med resultatet, træk fra dividenden
-    - Gentag med resten
+  2. *Find første led i kvotienten:*
+    - Tag det ledende led i $p(Z)$ og divider med $Z$
+    - Eksempel: $2Z^3 div Z = 2Z^2$
 
-  3. *Alternativ metode (Horners skema):*
-    - Hurtigere for lineære divisorer $(Z - r)$
+  3. *Gang og træk fra:*
+    - Gang kvotientleddet med hele divisoren $(Z - r)$
+    - Træk resultatet fra dividenden
+    - Eksempel: $2Z^2 dot (Z - 3) = 2Z^3 - 6Z^2$
 
-  4. *Faktorisér videre:* Løs den resulterende faktor for resterende rødder
+  4. *Gentag processen:*
+    - Brug resten som ny dividend
+    - Fortsæt indtil graden af resten er lavere end divisorens grad
+
+  5. *Tjek:* Resten skal være 0 (ellers var $r$ ikke en rod)
+
+  6. *Faktorisér videre:* Løs den resulterende kvotient for resterende rødder
 ]
 
 #example(title: [Faktorisér polynomium givet én rod])[
@@ -3879,13 +3919,9 @@ Afbildningsmatrix: $amat(L, beta, beta) = mat(1, 1, 1, 1;0, 1, 1, 1;0, 0, 1, 1;0
 
     Da $Z = 3$ er rod, er $(Z - 3)$ en faktor. Udfør division:
 
-    #align(center, polynomial-division(($2Z^3$, $-2Z^2$, $-8Z$, $-12$), (
-      (0, $2Z^2$, ($2Z^3$, $-6Z^2$), true),
-      (1, none, ($4Z^2$, $-8Z$), false),
-      (1, $+4Z$, ($4Z^2$, $-12Z$), true),
-      (2, none, ($4Z$, $-12$), false),
-      (2, $+4$, ($4Z$, $-12$), true),
-    ), $(Z - 3)$))
+    #align(center)[
+      $ #poly-div-working((2, -2, -8, -12), (1, -3), var: $Z$) $
+    ]
 
     $ p(Z) = (Z - 3)(2Z^2 + 4Z + 4) = 2(Z - 3)(Z^2 + 2Z + 2) $
 
@@ -3903,13 +3939,9 @@ Afbildningsmatrix: $amat(L, beta, beta) = mat(1, 1, 1, 1;0, 1, 1, 1;0, 0, 1, 1;0
 #example(title: [Polynomiumsdivision - Generelt eksempel])[
   Divider $x^3 - 5x^2 - 4x + 20$ med $(x - 2)$:
 
-  #align(center, polynomial-division(($x^3$, $-5x^2$, $-4x$, $+20$), (
-    (0, $x^2$, ($x^3$, $-2x^2$), true),
-    (1, none, ($-3x^2$, $-4x$), false),
-    (1, $-3x$, ($-3x^2$, $+6x$), true),
-    (2, none, ($-10x$, $+20$), false),
-    (2, $-10$, ($-10x$, $+20$), true),
-  ), $(x - 2)$))
+  #align(center)[
+    $ #poly-div-working((1, -5, -4, 20), (1, -2)) $
+  ]
 
   Altså: $x^3 - 5x^2 - 4x + 20 = (x - 2)(x^2 - 3x - 10)$
 ]
