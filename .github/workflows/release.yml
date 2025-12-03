@@ -24,7 +24,7 @@ jobs:
         run: |
           typst compile "Collection of solutions.typ" "Collection-of-solutions.pdf"
         env:
-          TYPST_PACKAGE_PATH: ${{ github.workspace }}/packages/local
+          TYPST_PACKAGE_PATH: ${{ github.workspace }}/packages
 
       - name: Get current date
         id: date
