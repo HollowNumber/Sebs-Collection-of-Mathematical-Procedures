@@ -1948,8 +1948,8 @@
   + *Gang* divisoren $(Z - r)$ med dette led
     - Eksempel: $2Z^2 dot (Z - 3) = 2Z^3 - 6Z^2$
   + *Træk fra* dividenden og få en ny rest
-    - Eksempel: $(2Z^3 - 2Z^2) - (2Z^3 - 6Z^2) = 4Z^2$
-  + *Gentag* med resten indtil graden er lavere end divisorens
+    - *VIGTIGT:* Husk parentesen! $(2Z^3 - 2Z^2) - (2Z^3 - 6Z^2) = 2Z^3 - 2Z^2 - 2Z^3 + 6Z^2 = 4Z^2$
+  + *Gentag* med resten indtil graden er lavere end divisorens grad
 
   *Trin 3 — Løs kvotienten:*
   - Hvis $q(Z)$ er 2. grad: Brug diskriminantformlen
@@ -1959,6 +1959,125 @@
   $ p(Z) = a_n (Z - r_1)(Z - r_2) dots.c (Z - r_n) $
 
   hvor $a_n$ er den ledende koefficient.
+]
+
+#note-box[
+  *VIGTIGT: Subtraktion med parenteser*
+
+  Ved polynomiumsdivision skal man *trække fra* produktet. Husk at minustegnet gælder HELE parentesen:
+
+  $ (2Z^3 - 2Z^2) - (2Z^3 - 6Z^2) $
+
+  *Forkert:* $2Z^3 - 2Z^2 - 2Z^3 - 6Z^2 = -8Z^2$ ✗
+
+  *Korrekt:* $2Z^3 - 2Z^2 - 2Z^3 + 6Z^2 = 4Z^2$ ✓
+
+  Minustegnet foran parentesen ændrer fortegn på ALLE led inde i parentesen!
+]
+
+== Polynomiumsdivision — Hurtig Referencetabel
+
+#important[
+  *Almindelige divisioner at huske!*
+
+  Ved polynomiumsdivision skal man ofte hurtigt finde: "Hvad gange $Z$ giver...?"
+
+  Denne tabel hjælper med de mest almindelige tilfælde.
+]
+
+#align(center)[
+  #table(
+    columns: 3,
+    stroke: 0.5pt,
+    inset: 8pt,
+    [*Ønsket led*],
+    [*Divisor* $(Z - r)$],
+    [*Kvotient-led*],
+    [$Z^3$],
+    [$Z$],
+    [$Z^2$],
+    [$2Z^3$],
+    [$Z$],
+    [$2Z^2$],
+    [$3Z^3$],
+    [$Z$],
+    [$3Z^2$],
+    [$-Z^3$],
+    [$Z$],
+    [$-Z^2$],
+    [$Z^2$],
+    [$Z$],
+    [$Z$],
+    [$2Z^2$],
+    [$Z$],
+    [$2Z$],
+    [$4Z^2$],
+    [$Z$],
+    [$4Z$],
+    [$-3Z^2$],
+    [$Z$],
+    [$-3Z$],
+    [$6Z^2$],
+    [$Z$],
+    [$6Z$],
+    [$Z$],
+    [$Z$],
+    [$1$],
+    [$2Z$],
+    [$Z$],
+    [$2$],
+    [$-4Z$],
+    [$Z$],
+    [$-4$],
+    [$8Z$],
+    [$Z$],
+    [$8$],
+  )
+]
+
+#note-box[
+  *Generel regel:*
+
+  For at finde kvotient-leddet: $("ledende led i dividend") div Z$
+
+  - $a Z^n div Z = a Z^(n-1)$
+  - Koefficienten beholdes, graden sænkes med 1
+]
+
+#align(center)[
+  #table(
+    columns: 4,
+    stroke: 0.5pt,
+    inset: 8pt,
+    [*Kvotient-led*],
+    [*Divisor* $(Z - r)$],
+    [*Produkt*],
+    [*Eksempel* ($r = 3$)],
+    [$2Z^2$],
+    [$(Z - 3)$],
+    [$2Z^3 - 6Z^2$],
+    [$2Z^2 dot Z = 2Z^3$, $2Z^2 dot (-3) = -6Z^2$],
+    [$4Z$],
+    [$(Z - 3)$],
+    [$4Z^2 - 12Z$],
+    [$4Z dot Z = 4Z^2$, $4Z dot (-3) = -12Z$],
+    [$4$],
+    [$(Z - 3)$],
+    [$4Z - 12$],
+    [$4 dot Z = 4Z$, $4 dot (-3) = -12$],
+    [$-2Z^2$],
+    [$(Z + 2)$],
+    [$-2Z^3 - 4Z^2$],
+    [$-2Z^2 dot Z = -2Z^3$, $-2Z^2 dot 2 = -4Z^2$],
+    [$3Z$],
+    [$(Z - 1)$],
+    [$3Z^2 - 3Z$],
+    [$3Z dot Z = 3Z^2$, $3Z dot (-1) = -3Z$],
+    [$-5$],
+    [$(Z + 1)$],
+    [$-5Z - 5$],
+    [$-5 dot Z = -5Z$, $-5 dot 1 = -5$],
+  )
 ]
 
 #lemma(name: "2. Gradsformel (Diskriminant)")[
@@ -2019,6 +2138,76 @@
   *Videre faktorisering:* $Z^2 - 3Z - 10 = (Z - 5)(Z + 2)$
 
   *Alle rødder:* $Z = 2, 5, -2$
+]
+
+== Find samtlige rødder i polynomium — Komplet metode
+
+#important[
+  *At finde ALLE rødder er en klassisk eksamensopgave!*
+
+  Typisk format: "Givet at $r$ er rod, find samtlige rødder i $CC$."
+]
+
+#note-box[
+  *Fremgangsmåde: Find alle rødder*
+
+  *Trin 1:* Brug den givne rod til at faktorisere
+  - Dividér $p(Z)$ med $(Z - r)$ for at få $q(Z)$
+
+  *Trin 2:* Løs $q(Z) = 0$
+  - Hvis $q(Z)$ er 2. grad: Brug diskriminantformlen
+  - Hvis $q(Z)$ er højere grad: Find flere rødder og divider igen
+
+  *Trin 3:* Husk komplekse rødder
+  - For polynomier med *reelle koefficienter*: Komplekse rødder kommer i *konjugerede par*
+  - Hvis $a + bi$ er rod, så er $a - bi$ også rod
+
+  *Trin 4:* Skriv alle rødder eksplicit
+  - Angiv hver rod på rektangulær form: $Z = a + bi$
+]
+
+#example(title: [Find alle rødder — Komplet eksempel])[
+  Givet $p(Z) = 2Z^3 - 2Z^2 - 8Z - 12$ hvor $Z = 3$ er rod.
+
+  Find samtlige rødder i $CC$ på rektangulær form.
+
+  #solution()[
+    *Trin 1: Polynomiumsdivision*
+
+    #align(center)[
+      $ #poly-div-working((2, -2, -8, -12), (1, -3), var: $Z$) $
+    ]
+
+    $ p(Z) = (Z - 3)(2Z^2 + 4Z + 4) = 2(Z - 3)(Z^2 + 2Z + 2) $
+
+    *Trin 2: Løs kvotienten $Z^2 + 2Z + 2 = 0$*
+
+    Diskriminant: $D = 2^2 - 4 dot 1 dot 2 = 4 - 8 = -4 < 0$
+
+    Komplekse rødder:
+    $ Z = (-2 plus.minus sqrt(-4))/2 = (-2 plus.minus 2i)/2 = -1 plus.minus i $
+
+    *Trin 3: Verificér konjugerede par*
+
+    $Z = -1 + i$ og $Z = -1 - i$ er konjugerede par ✓
+
+    *Trin 4: Samtlige rødder*
+
+    $ Z_1 = 3, quad Z_2 = -1 + i, quad Z_3 = -1 - i $
+
+    *Komplet faktorisering:*
+    $ p(Z) = 2(Z - 3)(Z - (-1+i))(Z - (-1-i)) $
+  ]
+]
+
+#math-hint()[
+  *Hurtige tjek for rødder:*
+  - Et polynomium af grad $n$ har præcis $n$ rødder (med multiplicitet) i $CC$
+  - Reelle koefficienter $=>$ komplekse rødder i konjugerede par
+  - Sum af rødder $= -a_(n-1)/a_n$ (Vieta's formler)
+  - Produkt af rødder $= (-1)^n a_0/a_n$
+
+  *MC-gæt:* Hvis du får én kompleks rod, tjek om dens konjugerede også er mulighed!
 ]
 
 == Divisionsalgoritmen til at undersøge faktor
@@ -2238,14 +2427,126 @@
   *Bemærk:* $bold(P)^(-1)$ eksisterer $<=>$ $det(bold(P)) eq.not 0$
 ]
 
+== Beregning af invers matrix — VIGTIG!
+
+#important[
+  *Matrixinversion — Eksamensklassiker!*
+
+  Inverser optræder hyppigt i forbindelse med:
+  - Basisskiftematricer: $amat("id", gamma, beta) = (amat("id", beta, gamma))^(-1)$
+  - Diagonalisering: $bold(A) = bold(P) bold(D) bold(P)^(-1)$
+  - Løsning af $bold(A) bold(x) = bold(b)$: $bold(x) = bold(A)^(-1) bold(b)$
+]
+
+#note-box[
+  *Metode 1: Formel for $2 times 2$ matrix (HURTIGST!)*
+
+  For $bold(A) = mat(a, b;c, d)$ med $det(bold(A)) = a d - b c eq.not 0$:
+
+  $ bold(A)^(-1) = 1/(a d - b c) mat(d, -b;-c, a) $
+
+  *Huskeregel:*
+  1. Byt diagonalelementerne ($a$ og $d$)
+  2. Skift fortegn på anti-diagonalen ($b$ og $c$)
+  3. Divider med determinanten
+]
+
+#note-box[
+  *Metode 2: Gauss-Jordan metoden (for alle størrelser)*
+
+  1. Opstil $[bold(A) | bold(I)]$ (matrix med identitetsmatrix til højre)
+  2. Rækkeoperationer indtil venstresiden er $bold(I)$
+  3. Højresiden er nu $bold(A)^(-1)$
+
+  $ [bold(A) | bold(I)] arrow.long^("RREF") [bold(I) | bold(A)^(-1)] $
+]
+
+#note-box[
+  *Metode 3: Blokdiagonal matrix (HURTIG GENVEJ!)*
+
+  Hvis $bold(A)$ er blokdiagonal:
+  $ bold(A) = mat(bold(B), bold(0);bold(0), bold(C)) quad => quad bold(A)^(-1) = mat(bold(B)^(-1), bold(0);bold(0), bold(C)^(-1)) $
+
+  *Eksempel:* For $mat(2, 1, 0;1, 1, 0;0, 0, 2)$:
+
+  - Øverste $2 times 2$ blok: $mat(2, 1;1, 1)^(-1) = 1/(2-1) mat(1, -1;-1, 2) = mat(1, -1;-1, 2)$
+  - Nederste blok: $2^(-1) = 1/2$
+
+  $ bold(A)^(-1) = mat(1, -1, 0;-1, 2, 0;0, 0, 1/2) $
+
+  *Genkend blokdiagonal:* Når matricen har "blokke" af nuller, så de øverste rækker ikke interagerer med de nederste.
+]
+
+#example(
+  title: [Beregn invers af $2 times 2$ matrix],
+)[
+  Find $bold(A)^(-1)$ for $bold(A) = mat(3, 5;1, 2)$.
+
+  #solution(
+    )[
+    *Trin 1:* Beregn determinanten:
+    $ det(bold(A)) = 3 dot 2 - 5 dot 1 = 6 - 5 = 1 $
+
+    *Trin 2:* Anvend formlen:
+    $ bold(A)^(-1) = 1/1 mat(2, -5;-1, 3) = mat(2, -5;-1, 3) $
+
+    *Verifikation:* $bold(A) bold(A)^(-1) = mat(3, 5;1, 2) mat(2, -5;-1, 3) = mat(6-5, -15+15;2-2, -5+6) = mat(1, 0;0, 1) checkmark$
+  ]
+]
+
+#example(title: [Beregn invers via Gauss-Jordan])[
+  Find $bold(A)^(-1)$ for $bold(A) = mat(1, 2;3, 7)$.
+
+  #solution()[
+    Opstil og reducer:
+    $
+      mat(1, 2, |, 1, 0;3, 7, |, 0, 1) &arrow.long_(R_2 <- R_2 - 3R_1) mat(1, 2, |, 1, 0;0, 1, |, -3, 1) \
+                                       &arrow.long_(R_1 <- R_1 - 2R_2) mat(1, 0, |, 7, -2;0, 1, |, -3, 1)
+    $
+
+    $ bold(A)^(-1) = mat(7, -2;-3, 1) $
+  ]
+]
+
+#math-hint()[
+  *Hvornår bruge hvilken metode?*
+  - $2 times 2$: Brug *altid* formlen — hurtigst og færrest fejl
+  - $3 times 3$ blokdiagonal: Opdel i blokke
+  - Generel $3 times 3$: Gauss-Jordan eller kofaktormetoden
+
+  *Inverse eksisterer ikke hvis:*
+  - $det = 0$
+  - Rækker/søjler er lineært afhængige
+  - RREF har ikke fuld rang
+]
+
 == Vurdér om system er homogent eller inhomogent
 
 #note-box[
-  *Fremgangsmåde:* (Sætning 6.1.2)
+  *Fremgangsmåde for lineære ligningssystemer:* (Sætning 6.1.2)
 
   1. Undersøg højresiden i den udvidede matrix
   2. Hvis alle elementer = 0: *Homogent*
   3. Ellers: *Inhomogent*
+]
+
+#note-box[
+  *Fremgangsmåde for differentialligningssystemer:*
+
+  For systemet $bold(f)'(t) = bold(A) bold(f)(t) + bold(g)(t)$:
+
+  1. Identificér $bold(g)(t)$ (tvangsfunktionen/højresiden)
+  2. Klassificér:
+    - $bold(g)(t) = bold(0)$ (nulvektor) for alle $t$: *Homogent*
+    - $bold(g)(t) eq.not bold(0)$: *Inhomogent*
+
+  *Eksempel (homogent):*
+  $ cases(f'_1(t) = f_1(t) + 2f_2(t), f'_2(t) = 2f_1(t) + f_2(t)) $
+  Dette er homogent fordi der kun er $f_1$ og $f_2$ led — ingen konstanter eller funktioner af $t$ alene.
+
+  *Eksempel (inhomogent):*
+  $ cases(f'_1(t) = f_1(t) + 2f_2(t) + e^t, f'_2(t) = 2f_1(t) + f_2(t) + 3) $
+  Dette er inhomogent pga. $e^t$ og $3$ leddene.
 ]
 
 == Vurdér om vektorer er lineært uafhængige
@@ -2845,15 +3146,43 @@
 
 == Vurdér om differentialligning er lineær og homogen
 
+#important[
+  *Homogen vs. Inhomogen — Eksamensklassiker!*
+
+  Spørgsmålet "Er systemet homogent eller inhomogent?" optræder ofte som del a) i eksamensopgaver.
+]
+
 #note-box[
   *Fremgangsmåde:* (Definition 13.0.2)
 
   For $bold(f)'(t) = bold(A) bold(f)(t) + bold(g)(t)$:
 
-  1. Undersøg om venstresiden er en lineær afbildning
-  2. Undersøg højresiden:
+  1. Skriv systemet på matrixform
+  2. Identificér $bold(g)(t)$:
     - $bold(g)(t) = bold(0)$: *Homogen*
     - $bold(g)(t) eq.not bold(0)$: *Inhomogen*
+
+  *Hurtig tjek:* Kig efter led der IKKE indeholder $f_1, f_2, ...$ funktionerne.
+  - Kun $f$-led: Homogen
+  - Konstanter eller funktioner af $t$ alene: Inhomogen
+]
+
+#example(title: [Klassificér ODE-systemer])[
+  *System 1:*
+  $ cases(f'_1(t) = f_1(t) + 2f_2(t), f'_2(t) = 2f_1(t) + f_2(t)) $
+
+  På matrixform: $bold(f)'(t) = mat(1, 2;2, 1) bold(f)(t) + vec(0, 0)$
+
+  *Svar:* Homogent (ingen ekstra led)
+
+  ---
+
+  *System 2:*
+  $ cases(f'_1(t) = 2f_1(t) - f_2(t) + e^t, f'_2(t) = f_1(t) + 3f_2(t)) $
+
+  På matrixform: $bold(f)'(t) = mat(2, -1;1, 3) bold(f)(t) + vec(e^t, 0)$
+
+  *Svar:* Inhomogent (pga. $e^t$ leddet)
 ]
 
 == Løsning til førsteordens differentialligning
@@ -2869,17 +3198,95 @@
 
 == Homogent system med reelle egenværdier
 
+#important[
+  *Løsning af homogent ODE-system — Komplet metode!*
+
+  Dette er en af de vigtigste eksamensopgaver. Følg trinene nøje.
+]
+
 #note-box[
   *For $bold(f)'(t) = bold(A) bold(f)(t)$:*
 
-  1. Find egenværdier: $det(bold(A) - lambda bold(I)_n) = 0$
-  2. Find egenvektorer via RREF af $(bold(A) - lambda_i bold(I)_n)$
-  3. Fuldstændig løsning:
-    $ bold(f)(t) = c_1 bold(v)_1 e^(lambda_1 t) + c_2 bold(v)_2 e^(lambda_2 t) + ... $
-  4. For begyndelsesværdiproblem $bold(f)(0) = bold(w)$:
-    - Opstil $bold(Q)$ med egenvektorer som søjler
-    - Find $bold(Q)^(-1)$
-    - Substituér $c_i$ med elementer i $bold(Q)^(-1) bold(w)$
+  *Trin 1: Find egenværdier*
+  - Opstil det karakteristiske polynomium: $det(bold(A) - lambda bold(I)_n) = 0$
+  - Løs for $lambda$ (brug diskriminantformlen for 2. grad)
+
+  *Trin 2: Find egenvektorer*
+  - For hver egenværdi $lambda_i$: Løs $(bold(A) - lambda_i bold(I)) bold(v) = bold(0)$
+  - Rækkereducér og aflæs egenvektoren
+
+  *Trin 3: Skriv fuldstændig løsning*
+  $ bold(f)(t) = c_1 e^(lambda_1 t) bold(v)_1 + c_2 e^(lambda_2 t) bold(v)_2 + ... $
+
+  *Trin 4: Bestem $c_1, c_2$ fra begyndelsesbetingelser*
+  - Sæt $t = 0$: $bold(f)(0) = c_1 bold(v)_1 + c_2 bold(v)_2 = bold(w)$
+  - Løs det lineære system for $c_1, c_2$
+]
+
+#example(title: [Komplet løsning af homogent ODE-system — E24 Opgave 6])[
+  Givet systemet:
+  $ cases(f'_1(t) = f_1(t) + 2f_2(t), f'_2(t) = 2f_1(t) + f_2(t)) $
+
+  a) Er systemet homogent eller inhomogent?
+  b) Find den fuldstændige reelle løsning.
+  c) Find løsningen med $f_1(0) = 3$, $f_2(0) = 5$.
+
+  #solution()[
+    *Del a) — Homogen/Inhomogen:*
+
+    Systemet er *homogent* da der kun er $f_1$ og $f_2$ led (ingen konstanter eller funktioner af $t$ alene).
+
+    ---
+
+    *Del b) — Fuldstændig løsning:*
+
+    *Trin 1: Opskriv på matrixform*
+    $ bold(A) = mat(1, 2;2, 1) $
+
+    *Trin 2: Find egenværdier*
+
+    Det karakteristiske polynomium:
+    $ det(bold(A) - lambda bold(I)) = det mat(1-lambda, 2;2, 1-lambda) = (1-lambda)^2 - 4 $
+    $ = 1 - 2lambda + lambda^2 - 4 = lambda^2 - 2lambda - 3 $
+
+    Løs $lambda^2 - 2lambda - 3 = 0$:
+    $ lambda = (2 plus.minus sqrt(4 + 12))/2 = (2 plus.minus 4)/2 $
+
+    *Egenværdier:* $lambda_1 = 3$, $lambda_2 = -1$
+
+    *Trin 3: Find egenvektorer*
+
+    For $lambda_1 = 3$:
+    $ bold(A) - 3bold(I) = mat(-2, 2;2, -2) arrow.long^("RREF") mat(1, -1;0, 0) $
+    Giver $v_1 = v_2$, så $bold(v)_1 = vec(1, 1)$
+
+    For $lambda_2 = -1$:
+    $ bold(A) - (-1)bold(I) = mat(2, 2;2, 2) arrow.long^("RREF") mat(1, 1;0, 0) $
+    Giver $v_1 = -v_2$, så $bold(v)_2 = vec(-1, 1)$ eller $vec(1, -1)$
+
+    *Trin 4: Fuldstændig løsning*
+    $ bold(f)(t) = c_1 e^(3t) vec(1, 1) + c_2 e^(-t) vec(-1, 1) $
+
+    Eller som system:
+    $ f_1(t) = c_1 e^(3t) - c_2 e^(-t) $
+    $ f_2(t) = c_1 e^(3t) + c_2 e^(-t) $
+
+    ---
+
+    *Del c) — Partikulær løsning med begyndelsesbetingelser:*
+
+    Sæt $t = 0$:
+    $ f_1(0) = c_1 - c_2 = 3 $
+    $ f_2(0) = c_1 + c_2 = 5 $
+
+    Addér ligningerne: $2c_1 = 8 => c_1 = 4$
+
+    Fra $c_1 + c_2 = 5$: $c_2 = 5 - 4 = 1$
+
+    *Partikulær løsning:*
+    $ f_1(t) = 4e^(3t) - e^(-t) $
+    $ f_2(t) = 4e^(3t) + e^(-t) $
+  ]
 ]
 
 == Inhomogent system med reelle egenværdier
@@ -4099,6 +4506,12 @@ Afbildningsmatrix: $amat(L, beta, beta) = mat(1, 1, 1, 1;0, 1, 1, 1;0, 0, 1, 1;0
 
 == Basisskiftematricer
 
+#important[
+  *Basisskiftematricer — Eksamensklassiker!*
+
+  Ofte kombineret med matrixinversion. Husk: $amat("id", gamma, beta) = (amat("id", beta, gamma))^(-1)$
+]
+
 #note-box[
   *Fremgangsmåde: Beregn basisskiftematricer*
 
@@ -4109,12 +4522,41 @@ Afbildningsmatrix: $amat(L, beta, beta) = mat(1, 1, 1, 1;0, 1, 1, 1;0, 0, 1, 1;0
 
   $amat("id", beta, gamma)$ har $gamma$-basisvektorerne som søjler (i standardkoordinater).
 
+  Eksempel: Hvis $gamma = (vec(2, 1, 0), vec(1, 1, 0), vec(0, 0, 2))$, så:
+  $ amat("id", beta, gamma) = mat(2, 1, 0;1, 1, 0;0, 0, 2) $
+
   *Metode 2: Beregn den inverse*
 
   $amat("id", gamma, beta) = (amat("id", beta, gamma))^(-1)$
 
+  *Metode 3: Brug blokdiagonal struktur (hvis muligt)*
+
+  Hvis matricen er blokdiagonal, invertér hver blok separat!
+
   *Verifikation:*
   $amat("id", beta, gamma) dot amat("id", gamma, beta) = bold(I)$
+]
+
+#note-box[
+  *Hurtig metode: Blokdiagonal basisskiftematrix*
+
+  Hvis $amat("id", beta, gamma)$ er blokdiagonal, kan inversen beregnes hurtigt:
+
+  $ mat(bold(B), bold(0);bold(0), bold(C))^(-1) = mat(bold(B)^(-1), bold(0);bold(0), bold(C)^(-1)) $
+
+  *Eksempel fra eksamensopgave:*
+
+  $ amat("id", beta, gamma) = mat(2, 1, 0;1, 1, 0;0, 0, 2) $
+
+  Denne er blokdiagonal med:
+  - Øvre blok: $mat(2, 1;1, 1)$
+  - Nedre blok: $mat(2)$
+
+  Invertér separat:
+  - $mat(2, 1;1, 1)^(-1) = 1/(2-1) mat(1, -1;-1, 2) = mat(1, -1;-1, 2)$
+  - $mat(2)^(-1) = mat(1/2)$
+
+  $ amat("id", gamma, beta) = mat(1, -1, 0;-1, 2, 0;0, 0, 1/2) $
 ]
 
 #example(title: [Beregn basisskiftematricer])[
@@ -4287,8 +4729,19 @@ Afbildningsmatrix: $amat(L, beta, beta) = mat(1, 1, 1, 1;0, 1, 1, 1;0, 0, 1, 1;0
 
 == ODE'er
 - *Homogen:* $bold(f)' = bold(A) bold(f)$ (ingen tvangsfunktion)
-- *Løsning:* $bold(f)(t) = sum_i c_i e^(lambda_i t) bold(v)_i$ hvor $lambda_i, bold(v)_i$ er egenværdi/egenvektor-par
+- *Inhomogen:* $bold(f)' = bold(A) bold(f) + bold(g)(t)$ (har tvangsfunktion)
+- *Løsning (homogen):* $bold(f)(t) = sum_i c_i e^(lambda_i t) bold(v)_i$ hvor $lambda_i, bold(v)_i$ er egenværdi/egenvektor-par
+- *Løsning (inhomogen):* $bold(f)(t) = bold(f)_h(t) + bold(f)_p(t)$ (homogen + partikulær)
+
+== Matrixinversion
+- *$2 times 2$ formel:* $mat(a, b;c, d)^(-1) = 1/(ad-bc) mat(d, -b;-c, a)$
+- *Blokdiagonal:* $mat(bold(B), bold(0);bold(0), bold(C))^(-1) = mat(bold(B)^(-1), bold(0);bold(0), bold(C)^(-1))$
+- *Basisskifte:* $amat("id", gamma, beta) = (amat("id", beta, gamma))^(-1)$
 
 == Induktion
 1. Basistilfælde: Verificér $P(n_0)$
 2. Induktionsskridt: Antag $P(k)$, vis $P(k+1)$
+
+== Polynomiumsdivision
+- Husk parenteser ved subtraktion: $(aZ^2 + bZ) - (cZ^2 + dZ) = (a-c)Z^2 + (b-d)Z$
+- Komplekse rødder kommer i konjugerede par (for reelle koefficienter)
