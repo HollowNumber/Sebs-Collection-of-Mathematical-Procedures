@@ -2160,10 +2160,10 @@
 
   *Trin 3:* Husk komplekse rødder
   - For polynomier med *reelle koefficienter*: Komplekse rødder kommer i *konjugerede par*
-  - Hvis $a + bi$ er rod, så er $a - bi$ også rod
+  - Hvis $a + b i$ er rod, så er $a - b i$ også rod
 
   *Trin 4:* Skriv alle rødder eksplicit
-  - Angiv hver rod på rektangulær form: $Z = a + bi$
+  - Angiv hver rod på rektangulær form: $Z = a + b i$
 ]
 
 #example(title: [Find alle rødder — Komplet eksempel])[
@@ -4734,7 +4734,7 @@ Afbildningsmatrix: $amat(L, beta, beta) = mat(1, 1, 1, 1;0, 1, 1, 1;0, 0, 1, 1;0
 - *Løsning (inhomogen):* $bold(f)(t) = bold(f)_h(t) + bold(f)_p(t)$ (homogen + partikulær)
 
 == Matrixinversion
-- *$2 times 2$ formel:* $mat(a, b;c, d)^(-1) = 1/(ad-bc) mat(d, -b;-c, a)$
+- *$2 times 2$ formel:* $mat(a, b;c, d)^(-1) = 1/(a d-b c) mat(d, -b;-c, a)$
 - *Blokdiagonal:* $mat(bold(B), bold(0);bold(0), bold(C))^(-1) = mat(bold(B)^(-1), bold(0);bold(0), bold(C)^(-1))$
 - *Basisskifte:* $amat("id", gamma, beta) = (amat("id", beta, gamma))^(-1)$
 
@@ -4743,5 +4743,5 @@ Afbildningsmatrix: $amat(L, beta, beta) = mat(1, 1, 1, 1;0, 1, 1, 1;0, 0, 1, 1;0
 2. Induktionsskridt: Antag $P(k)$, vis $P(k+1)$
 
 == Polynomiumsdivision
-- Husk parenteser ved subtraktion: $(aZ^2 + bZ) - (cZ^2 + dZ) = (a-c)Z^2 + (b-d)Z$
+- Husk parenteser ved subtraktion: $(a Z^2 + b Z) - (c Z^2 + d Z) = (a-c)Z^2 + (b-d)Z$
 - Komplekse rødder kommer i konjugerede par (for reelle koefficienter)
